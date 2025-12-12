@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrapper">
+    <h1>Hello,</h1>
+    <div class="add-btn" id="openModal">
+        <span class="circle">+</span>
+        Добавить данные
+    </div>
+</div>
+
+<!-- МОДАЛ -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+
+        <h2>Регистрация</h2>
+
+        <input type="text" id="fullname" placeholder="Имя и Фамилия">
+
+        <input type="tel" id="phone" placeholder="Номер телефона">
+
+        <label class="small-label">Дата и время заказа:</label>
+        <input type="datetime-local" id="datetime">
+
+        <button class="submit-btn" id="submit">Готово</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
