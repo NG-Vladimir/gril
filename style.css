@@ -80,7 +80,6 @@ h1 {
     transform: translateY(0);
 }
 
-/* FIX растягивания */
 input {
     box-sizing: border-box;
     width: 100%;
@@ -90,11 +89,20 @@ input {
     border: 1px solid #ddd;
     font-size: 16px;
     outline: none;
+    background: #fafafa;
 }
 
 input:focus {
     border-color: #34a853;
     box-shadow: 0 0 0 3px rgba(52,168,83,0.20);
+}
+
+input[type="datetime-local"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-size: 16px;
+    padding: 12px;
 }
 
 .small-label {
@@ -138,4 +146,4 @@ input:focus {
         font-size: 17px;
         padding: 12px;
     }
-}
+}   
