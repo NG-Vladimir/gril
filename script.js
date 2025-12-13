@@ -5,81 +5,139 @@ const datetimeInput = document.getElementById("datetime");
 const fullnameInput = document.getElementById("fullname");
 const phoneInput = document.getElementById("phone");
 
-// Префикс +375 фиксирован
-phoneInput.value = "+375(";
+/* ===== ТЕЛЕФОН ===== */
+phoneInput.value = "+375";
 
-// Фокус на телефоне
 phoneInput.addEventListener("focus", () => {
-    if (!phoneInput.value.startsWith("+375(")) phoneInput.value = "+375(";
-    setTimeout(() => phoneInput.selectionStart = phoneInput.selectionEnd = phoneInput.value.length, 0);
+    if (!phoneInput.value.startsWith("+375")) {
+        phoneInput.value = "+375";
+    }
 });
 
-// Маска телефона: можно полностью стирать после +375
 phoneInput.addEventListener("input", () => {
-    let cursorPos = phoneInput.selectionStart;
-    let value = phoneInput.value;
+    let digits = phoneInput.value.replace(/\D/g, '');
 
-    // Убираем все кроме цифр после +375
-    let digits = value.replace(/\D/g, '');
-    if (!digits.startsWith("375")) digits = "375";
+    // всегда оставляем код страны
+    if (!digits.startsWith("375")) {
+        digits = "375" + digits.replace(/^375/, '');
+    }
 
-    digits = digits.slice(0,12);
+    // максимум 12 цифр: 375 + 9 цифр номера
+    digits = digits.slice(0, 12);
 
     let formatted = "+375";
-    if (digits.length > 3) formatted += "(" + digits.slice(3,5);
-    if (digits.length >= 5) formatted += ")" + digits.slice(5,8);
-    if (digits.length >= 8) formatted += "-" + digits.slice(8,10);
-    if (digits.length >= 10) formatted += "-" + digits.slice(10,12);
+
+    if (digits.length > 3) formatted += "(" + digits.slice(3, 5);
+    if (digits.length > 5) formatted += ")" + digits.slice(5, 8);
+    if (digits.length > 8) formatted += "-" + digits.slice(8, 10);
+    if (digits.length > 10) formatted += "-" + digits.slice(10, 12);
 
     phoneInput.value = formatted;
-    phoneInput.selectionStart = phoneInput.selectionEnd = phoneInput.value.length;
 });
 
-// Открытие модалки
+/* ===== ДАТА И ВРЕМЯ ===== */
+
+function isWorkingTime(date) {
+    const day = date.getDay(); // 0 - воскресенье
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const time = hours + minutes / 60;
+
+    if (day === 0) return false; // воскресенье
+
+    if (day >= 1 && day <= 5) {
+        return time >= 10 && time <= 18;
+    }
+
+    if (day === 6) {
+        return time >= 10 && time <= 17;
+    }
+
+    return false;
+}
+
+function setInitialDateTime() {
+    const now = new Date();
+    now.setMinutes(0);
+
+    for (let i = 0; i < 72; i++) {
+        const test = new Date(now.getTime() + i * 60 * 60 * 1000);
+        if (isWorkingTime(test)) {
+            datetimeInput.value = test.toISOString().slice(0, 16);
+            break;
+        }
+    }
+}
+
+/* ===== ОТКРЫТИЕ МОДАЛКИ ===== */
 openModal.onclick = () => {
     modal.classList.add("active");
-
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2,'0');
-    const day = String(now.getDate()).padStart(2,'0');
-    const hours = String(now.getHours()).padStart(2,'0');
-    const minutes = String(now.getMinutes()).padStart(2,'0');
-    datetimeInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
-
-    setTimeout(() => phoneInput.focus(), 100);
+    setInitialDateTime();
 };
 
-// Закрытие модалки при клике вне контента
+/* ===== ЗАКРЫТИЕ ===== */
 modal.onclick = (e) => {
     if (e.target === modal) modal.classList.remove("active");
 };
 
-// Отправка формы
+/* ===== SUBMIT ===== */
 orderForm.addEventListener("submit", (e) => {
     e.preventDefault();
+
+    const fullname = fullnameInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const datetime = datetimeInput.value;
+
+    // 🔴 Проверка: fullname и datetime должны быть заполнены
+    if (!fullname || !datetime) {
+        alert(
+`⚠️ Пожалуйста, заполните все поля регистрации.
+
+Без этих данных мы не сможем принять заказ 🙏`
+        );
+        return;
+    }
+
+    const digits = phone.replace(/\D/g, '');
+
+    if (digits.length !== 12) {
+        alert(
+`⚠️ Пожалуйста, введите номер телефона полностью.
+
+Пример: +375(29)123-45-67`
+        );
+        return;
+    }
+
+    const date = new Date(datetime);
+
+    // 🔴 Проверка рабочего времени
+    if (!isWorkingTime(date)) {
+        alert(
+`К сожалению, в это время мы не работаем 🙏
+
+🕙 Понедельник–пятница: с 10:00 до 18:00
+🕙 Суббота: с 10:00 до 17:00
+❌ В воскресенье — выходной
+
+Пожалуйста, выберите удобное рабочее время 💛`
+        );
+        return;
+    }
+
     const data = {
-        fullname: fullnameInput.value.trim(),
-        phone: phoneInput.value.trim(),
-        datetime: datetimeInput.value
+        fullname,
+        phone,
+        datetime
     };
-
-    if (!data.fullname || !data.phone || !data.datetime) {
-        alert("Пожалуйста, заполните все поля.");
-        return;
-    }
-
-    if (data.phone.length < 16) {
-        alert("Введите корректный номер телефона, например +375(29)123-45-67");
-        return;
-    }
 
     let orders = JSON.parse(localStorage.getItem("orders")) || [];
     orders.push(data);
     localStorage.setItem("orders", JSON.stringify(orders));
 
-    alert("Данные сохранены!");
+    alert("Заказ принят! Мы свяжемся с вами 😊");
+
     orderForm.reset();
-    phoneInput.value = "+375(";
+    phoneInput.value = "+375";
     modal.classList.remove("active");
 });
