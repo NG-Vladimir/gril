@@ -19,20 +19,22 @@
 <!-- МОДАЛ -->
 <div class="modal" id="modal">
     <div class="modal-content">
-
         <h2>Регистрация</h2>
+        <form id="orderForm">
+            <label for="fullname" class="small-label">Имя и Фамилия:</label>
+            <input type="text" id="fullname" placeholder="Имя и Фамилия" required>
 
-        <input type="text" id="fullname" placeholder="Имя и Фамилия">
+            <label for="phone" class="small-label">Номер телефона:</label>
+            <input type="tel" id="phone" placeholder="+375(__)___-__-__" required>
 
-        <input type="tel" id="phone" placeholder="Номер телефона">
+            <label for="datetime" class="small-label">Дата и время заказа:</label>
+            <input type="datetime-local" id="datetime" required>
 
-        <label class="small-label">Дата и время заказа:</label>
-        <input type="datetime-local" id="datetime">
-
-        <button class="submit-btn" id="submit">Готово</button>
+            <button type="submit" class="submit-btn">Готово</button>
+        </form>
     </div>
 </div>
 
-<script src="script.js"></script>
+<script src="script.js" defer></script>
 </body>
 </html>

@@ -1,26 +1,31 @@
 const modal = document.getElementById("modal");
 const openModal = document.getElementById("openModal");
-const submit = document.getElementById("submit");
+const orderForm = document.getElementById("orderForm");
 const datetimeInput = document.getElementById("datetime");
 const fullnameInput = document.getElementById("fullname");
 const phoneInput = document.getElementById("phone");
 
-// Автоподстановка кода телефона и форматирование +375(XX)XXX-XX-XX
-phoneInput.value = "+375";
-phoneInput.addEventListener("input", () => {
-    let digits = phoneInput.value.replace(/\D/g, ''); // оставляем только цифры
-    if (!digits.startsWith('375')) digits = '375';
+// Маска телефона +375(XX)XXX-XX-XX (гибкая)
+phoneInput.addEventListener("input", (e) => {
+    let cursorPos = phoneInput.selectionStart;
+    let value = phoneInput.value.replace(/\D/g, ''); // оставляем только цифры
 
-    let formatted = '+375';
-    if (digits.length > 3) formatted += '(' + digits.slice(3, 5);
-    if (digits.length >= 5) formatted += ')' + digits.slice(5, 8);
-    if (digits.length >= 8) formatted += '-' + digits.slice(8, 10);
-    if (digits.length >= 10) formatted += '-' + digits.slice(10, 12);
+    // Всегда начинаем с 375
+    if (!value.startsWith("375")) value = "375";
+
+    let formatted = "+375";
+    if (value.length > 3) formatted += "(" + value.slice(3, 5);
+    if (value.length >= 5) formatted += ")" + value.slice(5, 8);
+    if (value.length >= 8) formatted += "-" + value.slice(8, 10);
+    if (value.length >= 10) formatted += "-" + value.slice(10, 12);
 
     phoneInput.value = formatted;
+
+    // Попытка сохранить курсор в удобном месте
+    phoneInput.selectionStart = phoneInput.selectionEnd = cursorPos;
 });
 
-// Открытие модального окна
+// Автоподстановка даты при открытии модалки
 openModal.onclick = () => {
     modal.classList.add("active");
 
@@ -38,34 +43,39 @@ modal.onclick = (e) => {
     if (e.target === modal) modal.classList.remove("active");
 };
 
-// Сбор данных и проверка перед отправкой
-submit.onclick = () => {
+// Обработка submit формы
+orderForm.addEventListener("submit", (e) => {
+    e.preventDefault(); // предотвращаем перезагрузку
+
     const data = {
         fullname: fullnameInput.value.trim(),
         phone: phoneInput.value.trim(),
         datetime: datetimeInput.value
     };
 
+    // Проверка на пустые поля
     if (!data.fullname || !data.phone || !data.datetime) {
         alert("Пожалуйста, заполните все поля.");
         return;
     }
 
-    // Проверка на корректную длину номера: +375(XX)XXX-XX-XX = 16 символов
-    if (data.phone.length !== 16) {
+    // Проверка длины телефона
+    if (data.phone.length < 16) {
         alert("Введите корректный номер телефона, например +375(33)334-13-92");
         return;
     }
 
+    // Сохраняем в localStorage
     let orders = JSON.parse(localStorage.getItem("orders")) || [];
     orders.push(data);
     localStorage.setItem("orders", JSON.stringify(orders));
 
     console.log("DATA:", data);
     alert("Данные сохранены!");
-    modal.classList.remove("active");
 
-    fullnameInput.value = "";
+    // Сброс формы
+    orderForm.reset();
     phoneInput.value = "+375";
-    datetimeInput.value = "";
-};
+
+    modal.classList.remove("active");
+});

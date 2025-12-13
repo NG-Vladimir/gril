@@ -83,8 +83,6 @@ h1 {
 
 input {
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
     padding: 14px;
     margin: 10px 0 16px;
     border-radius: 14px;
@@ -95,27 +93,8 @@ input {
     font-size: 16px;
 }
 
-input:focus {
+input:focus-visible {
     box-shadow: inset 2px 2px 5px #bebebe, inset -2px -2px 5px #ffffff, 0 0 5px rgba(52,168,83,0.3);
-}
-
-input[type="datetime-local"] {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    padding: 14px;
-    font-size: 16px;
-    border-radius: 14px;
-}
-
-.small-label {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 6px;
-    color: #555;
 }
 
 .submit-btn {
@@ -146,11 +125,6 @@ input[type="datetime-local"] {
     }
 
     input {
-        padding: 12px;
-        font-size: 15px;
-    }
-
-    input[type="datetime-local"] {
         padding: 12px;
         font-size: 15px;
     }
