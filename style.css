@@ -1,27 +1,24 @@
 *, *::before, *::after {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 body {
+    margin: 0;
     background: #e0e0e0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 10px;
+    padding: 12px;
 }
 
 .wrapper {
     text-align: center;
-    width: 100%;
-    max-width: 450px;
 }
 
 h1 {
-    font-size: 42px;
+    font-size: 40px;
     margin-bottom: 20px;
     color: #333;
 }
@@ -31,30 +28,26 @@ h1 {
     align-items: center;
     padding: 14px 24px;
     border-radius: 40px;
-    font-size: 20px;
+    font-size: 18px;
     color: #e534e8;
     cursor: pointer;
     background: #e0e0e0;
     box-shadow: 5px 5px 15px #bebebe, -5px -5px 15px #ffffff;
-    transition: 0.2s ease;
-}
-
-.add-btn:hover {
-    transform: scale(1.05);
 }
 
 .circle {
-    width: 36px;
-    height: 36px;
-    background: #e0e0e0;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 14px;
-    font-size: 24px;
+    margin-right: 12px;
+    font-size: 22px;
     box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff;
 }
+
+/* ===== МОДАЛ ===== */
 
 .modal {
     position: fixed;
@@ -65,7 +58,6 @@ h1 {
     align-items: center;
     opacity: 0;
     pointer-events: none;
-    transition: 0.25s ease;
 }
 
 .modal.active {
@@ -74,89 +66,82 @@ h1 {
 }
 
 .modal-content {
+    width: 100%;
+    max-width: 380px;
     background: #e0e0e0;
-    width: 95%;
-    max-width: 400px;
     padding: 20px;
-    border-radius: 28px;
+    border-radius: 24px;
     box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;
-    transform: translateY(40px);
-    transition: 0.25s ease;
-}
-
-.modal.active .modal-content {
-    transform: translateY(0);
 }
 
 .modal-title {
-    margin-bottom: 20px;
     text-align: center;
-    font-size: 24px;
-    color: #333;
+    margin-bottom: 18px;
+    font-size: 22px;
 }
+
+/* ===== ФОРМА ===== */
 
 form {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    gap: 14px;
 }
 
 input {
     width: 100%;
-    padding: 14px;
-    margin-bottom: 16px;
+    height: 52px;               /* КЛЮЧ */
+    padding: 0 14px;            /* КЛЮЧ */
+    font-size: 16px;
     border-radius: 14px;
     border: none;
     outline: none;
     background: #e0e0e0;
-    box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff;
-    font-size: 16px;
+    box-shadow: inset 5px 5px 10px #bebebe,
+                inset -5px -5px 10px #ffffff;
 }
 
-input:focus-visible {
-    box-shadow: inset 2px 2px 5px #bebebe, inset -2px -2px 5px #ffffff, 0 0 5px rgba(52,168,83,0.3);
+/* ===== ФИКС datetime-local ===== */
+
+input[type="datetime-local"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    line-height: 52px;           /* КЛЮЧ */
+    padding-right: 10px;         /* чтобы не резался текст */
 }
+
+/* ===== LABEL ===== */
+
+.small-label {
+    font-size: 14px;
+    color: #555;
+    margin-top: 4px;
+}
+
+/* ===== КНОПКА ===== */
 
 .submit-btn {
-    width: 100%;
-    padding: 16px;
-    border: none;
+    height: 52px;
+    font-size: 18px;
     border-radius: 14px;
-    background: #e0e0e0;
-    box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff;
-    font-size: 20px;
-    color: #e534e8;
+    border: none;
     cursor: pointer;
-    transition: 0.2s;
+    background: #e0e0e0;
+    color: #e534e8;
+    box-shadow: 5px 5px 10px #bebebe,
+                -5px -5px 10px #ffffff;
 }
 
-.submit-btn:hover {
-    box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff;
-}
+/* ===== MOBILE ===== */
 
-label.small-label {
-    font-size: 14px;
-    margin-bottom: 6px;
-    color: #555;
-}
-
-@media (max-width: 500px) {
+@media (max-width: 480px) {
     h1 {
         font-size: 32px;
     }
+
     .modal-content {
         padding: 18px;
-    }
-    input {
-        font-size: 16px;
-        padding: 12px;
-    }
-    .submit-btn {
-        font-size: 18px;
-        padding: 12px;
-    }
-    .add-btn {
-        font-size: 18px;
-        padding: 12px 20px;
     }
 }
