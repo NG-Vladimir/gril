@@ -5,37 +5,49 @@ const datetimeInput = document.getElementById("datetime");
 const fullnameInput = document.getElementById("fullname");
 const phoneInput = document.getElementById("phone");
 
-// Маска телефона +375(XX)XXX-XX-XX (гибкая)
-phoneInput.addEventListener("input", (e) => {
-    let cursorPos = phoneInput.selectionStart;
-    let value = phoneInput.value.replace(/\D/g, ''); // оставляем только цифры
+// Префикс +375 фиксирован
+phoneInput.value = "+375(";
 
-    // Всегда начинаем с 375
-    if (!value.startsWith("375")) value = "375";
-
-    let formatted = "+375";
-    if (value.length > 3) formatted += "(" + value.slice(3, 5);
-    if (value.length >= 5) formatted += ")" + value.slice(5, 8);
-    if (value.length >= 8) formatted += "-" + value.slice(8, 10);
-    if (value.length >= 10) formatted += "-" + value.slice(10, 12);
-
-    phoneInput.value = formatted;
-
-    // Попытка сохранить курсор в удобном месте
-    phoneInput.selectionStart = phoneInput.selectionEnd = cursorPos;
+// Фокус на телефоне
+phoneInput.addEventListener("focus", () => {
+    if (!phoneInput.value.startsWith("+375(")) phoneInput.value = "+375(";
+    setTimeout(() => phoneInput.selectionStart = phoneInput.selectionEnd = phoneInput.value.length, 0);
 });
 
-// Автоподстановка даты при открытии модалки
+// Маска телефона: можно полностью стирать после +375
+phoneInput.addEventListener("input", () => {
+    let cursorPos = phoneInput.selectionStart;
+    let value = phoneInput.value;
+
+    // Убираем все кроме цифр после +375
+    let digits = value.replace(/\D/g, '');
+    if (!digits.startsWith("375")) digits = "375";
+
+    digits = digits.slice(0,12);
+
+    let formatted = "+375";
+    if (digits.length > 3) formatted += "(" + digits.slice(3,5);
+    if (digits.length >= 5) formatted += ")" + digits.slice(5,8);
+    if (digits.length >= 8) formatted += "-" + digits.slice(8,10);
+    if (digits.length >= 10) formatted += "-" + digits.slice(10,12);
+
+    phoneInput.value = formatted;
+    phoneInput.selectionStart = phoneInput.selectionEnd = phoneInput.value.length;
+});
+
+// Открытие модалки
 openModal.onclick = () => {
     modal.classList.add("active");
 
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2,'0');
+    const day = String(now.getDate()).padStart(2,'0');
+    const hours = String(now.getHours()).padStart(2,'0');
+    const minutes = String(now.getMinutes()).padStart(2,'0');
     datetimeInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+    setTimeout(() => phoneInput.focus(), 100);
 };
 
 // Закрытие модалки при клике вне контента
@@ -43,39 +55,31 @@ modal.onclick = (e) => {
     if (e.target === modal) modal.classList.remove("active");
 };
 
-// Обработка submit формы
+// Отправка формы
 orderForm.addEventListener("submit", (e) => {
-    e.preventDefault(); // предотвращаем перезагрузку
-
+    e.preventDefault();
     const data = {
         fullname: fullnameInput.value.trim(),
         phone: phoneInput.value.trim(),
         datetime: datetimeInput.value
     };
 
-    // Проверка на пустые поля
     if (!data.fullname || !data.phone || !data.datetime) {
         alert("Пожалуйста, заполните все поля.");
         return;
     }
 
-    // Проверка длины телефона
     if (data.phone.length < 16) {
-        alert("Введите корректный номер телефона, например +375(33)334-13-92");
+        alert("Введите корректный номер телефона, например +375(29)123-45-67");
         return;
     }
 
-    // Сохраняем в localStorage
     let orders = JSON.parse(localStorage.getItem("orders")) || [];
     orders.push(data);
     localStorage.setItem("orders", JSON.stringify(orders));
 
-    console.log("DATA:", data);
     alert("Данные сохранены!");
-
-    // Сброс формы
     orderForm.reset();
-    phoneInput.value = "+375";
-
+    phoneInput.value = "+375(";
     modal.classList.remove("active");
 });

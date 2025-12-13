@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация</title>
+    <title>Сделать заказ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,22 +12,19 @@
     <h1>Hello,</h1>
     <div class="add-btn" id="openModal">
         <span class="circle">+</span>
-        Добавить данные
+        Сделать заказ
     </div>
 </div>
 
 <!-- МОДАЛ -->
 <div class="modal" id="modal">
     <div class="modal-content">
-        <h2>Регистрация</h2>
+        <h2 class="modal-title">Регистрация</h2>
         <form id="orderForm">
-            <label for="fullname" class="small-label">Имя и Фамилия:</label>
             <input type="text" id="fullname" placeholder="Имя и Фамилия" required>
-
-            <label for="phone" class="small-label">Номер телефона:</label>
             <input type="tel" id="phone" placeholder="+375(__)___-__-__" required>
-
-            <label for="datetime" class="small-label">Дата и время заказа:</label>
+            
+            <label class="small-label" for="datetime">Готовность вашего заказа:</label>
             <input type="datetime-local" id="datetime" required>
 
             <button type="submit" class="submit-btn">Готово</button>
